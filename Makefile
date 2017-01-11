@@ -1,4 +1,4 @@
-TESTARGS = --cov-report term-missing --cov-report html --cov iris_core
+TESTARGS = --cov-report term-missing --cov-report html --cov alkahest
 
 help:
 	@echo
@@ -25,7 +25,7 @@ xdist:
 	py.test -n 4 $(TESTARGS)
 
 lint:
-	flake8 iris_core
+	flake8 alkahest
 
 clean:
 	rm -rf htmlcov *.egg-info build dist

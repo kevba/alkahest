@@ -1,10 +1,10 @@
 from sqlalchemy import Column, Integer, String
-from alkahest import AlkahestMixin
+from alkahest.mixin import Alkahest
 
-from alkahest.models import Model
+from test_application.models import Model
 
 
-class TestModel(Model, AlkahestMixin):
+class TestModel(Model, Alkahest):
     __tablename__ = 'test_model'
 
     id = Column(Integer, primary_key=True)
