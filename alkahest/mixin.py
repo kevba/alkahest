@@ -1,19 +1,5 @@
-# from collections import defaultdict
+from alkahest.utils import snake_case_string
 
-
-# class AlkahestMetaClass(type):
-#         __inheritors__ = defaultdict(list)
-#
-#         def __new__(meta, name, bases, dict_):
-#             klass = type.__new__(meta, name, bases, dict_)
-#             for base in klass.mro()[1:-1]:
-#                 meta.__inheritors__[base].append(klass)
-#             return klass
-#
-#         def __init__(cls, classname, bases, dict_):
-#             return super(AlkahestMetaClass, cls).__init__(
-#                 classname, bases, dict_
-#             )
 
 class Alkahest(object):
     columns_blacklist = ['id']
@@ -33,15 +19,21 @@ class Alkahest(object):
 
     @classmethod
     def _get_subclasses(cls):
+        """ Return a generator of all direct subclasses
+        """
         for subclass in cls.__subclasses__():
-            # yield from subclass.get_subclasses()
             yield subclass
 
     @classmethod
     def _get_resource_name(cls):
+        """ Checks if a resource name has been defined on the class. If no name
+        has been defined it uses a snae-cased version of the classname.
+
+        :returns: String resource_name
+        """
         rsn = ''
         try:
             rsn = cls.resource_name
         except AttributeError:
-            rsn = cls.__name__
+            rsn = snake_case_string(cls.__name__)
         return rsn

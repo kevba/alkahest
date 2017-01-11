@@ -1,4 +1,4 @@
-from flask import Blueprint, abort, jsonify, current_app as app
+from flask import Blueprint, jsonify, current_app as app
 from alkahest.wrappers import get_resource_class, get_resource_object
 
 bp = Blueprint('alkahest_get', __name__)
@@ -15,8 +15,3 @@ def get_resource(resource_class):
 @get_resource_object
 def get_resource_by_id(resource_object):
     return jsonify(resource_object.to_dict())
-
-
-@bp.route('/wow', methods=['GET'])
-def wow():
-    abort(418)
