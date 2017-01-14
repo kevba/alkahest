@@ -1,7 +1,9 @@
-TESTARGS = --cov-report term-missing --cov-report html --cov alkahest
+TESTARGS = --cov-report term-missing --cov alkahest
 
 help:
 	@echo
+	@echo "  Alkahest"
+	@echo "  \033[36mtest_app\033[0m     Runs a test application at 0.0.0.0:5000"
 	@echo "  \033[36mdeps\033[0m         installs and updates dependencies"
 	@echo "  \033[36mdev_deps\033[0m     installs and updates dev dependencies"
 	@echo "  \033[36mtest\033[0m         runs pytest"
@@ -21,14 +23,14 @@ dev_deps:
 test:
 	py.test $(TESTARGS)
 
+test_app:
+	python test_application/run_app.py
+
 xdist:
 	py.test -n 4 $(TESTARGS)
 
 lint:
 	flake8 alkahest
-
-clean:
-	rm -rf htmlcov *.egg-info build dist
 
 whl:
 	python setup.py bdist_wheel

@@ -6,29 +6,34 @@ from flask import Flask
 
 from test_application.models import Model
 
-from test_application.models.test_model import TestModel
-from test_application.models.test_other_model import TestOtherModel
+from test_application.models.book import Book
+from test_application.models.library import Library
 
 
 def setup_database(app, session):
-    Model.metadata.drop_all(bind=app.engine)
-    print('Destroyed existing database')
-    # Recreate
     Model.metadata.create_all(bind=app.engine)
+    print('created database')
 
-    session.add(TestModel(string_1='wow', string_2='owo'))
-    session.add(TestModel(string_1='ayyy', string_2='lmao'))
+    library = Library(name='My shelf')
+    session.add(library)
 
-    session.add(TestOtherModel(string_1='a', integer_1=13))
-    session.add(TestOtherModel(string_1='b', integer_1=55))
+    books = [
+        Book(isbn=9783492285834, title='guards, guards!',
+             author='Terry Pratchett', library=library),
+        Book(isbn=9780575066564, title='Reaper man',
+             author='Terry Pratchett', library=library),
+        Book(isbn=978006222569, title='Equal rites',
+             author='Terry Pratchett', library=library)
+    ]
+    session.add_all(books)
 
     session.commit()
+    print('populated the database')
 
 
 def create_engine_and_session(app):
     """ Initialize the database session on the given app. """
-    app.engine = create_engine('sqlite:////tmp/alkahest.db',
-                               convert_unicode=True)
+    app.engine = create_engine('sqlite:////tmp/alkahest.db')
 
     return create_session(app.engine)
 
@@ -44,10 +49,6 @@ def create_session(engine):
 
 
 def create_app():
-    """ Create and return instance of :class:`flask.Flask`.
-
-    :return: Instance of :class:`flask.Flask`.
-    """
     app = Flask(__name__)
 
     session = create_engine_and_session(app)

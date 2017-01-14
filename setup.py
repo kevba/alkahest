@@ -9,5 +9,6 @@ setup(name='alkahest',
           'alkahest.blueprints',
       ],
       install_requires=[
-          'Flask>=0.10.1'
+          'Flask>=0.10.1',
+          'SQLAlchemy=>1.1.4'
       ])
