@@ -1,16 +1,30 @@
+from sqlalchemy import inspect, ForeignKey
 from alkahest.utils import snake_case_string
 
 
 class Alkahest(object):
     columns_blacklist = ['id']
 
-    # __metaclass__ = AlkahestMetaClass
-    def to_dict(self):
+    def to_dict(self, cascading=True):
         dict_ = {}
+        model = inspect(self)
 
-        for name in self. _get_column_names():
-            if name not in self.columns_blacklist:
-                dict_[name] = getattr(self, name)
+        columns = [c for c in model.mapper.columns.values()
+                   if c.key not in self.columns_blacklist]
+
+        # Remove foreignkeys, because tehy'll get a nested dict
+        if cascading:
+            columns = [c for c in columns if len(c.foreign_keys) == 0]
+
+        for col in columns:
+            if col.key not in self.columns_blacklist:
+                dict_[col.key] = getattr(self, col.key)
+
+        if cascading:
+            for rel_attr in model.mapper.relationships.keys():
+                dict_[rel_attr] = getattr(self, rel_attr).to_dict(
+                    cascading=False
+                )
 
         return dict_
 
